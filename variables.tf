@@ -2,7 +2,6 @@
 variable "project_id" {
   type        = string
   description = "The ID of your Google Cloud project. This is a unique identifier for your project and can be found in the Google Cloud Console."
-  default     = ""
 }
 
 variable "api_services" {
@@ -28,18 +27,6 @@ variable "zone" {
 variable "cluster_id" {
   type        = string
   description = "Cluster id from IOMETE. This should match the cluster id in IOMETE"
-}
-
-variable "service_account_id" {
-  type        = string
-  description = "The name of the service account to be created. This service account will be used to authenticate and authorize access to various resources."
-  default     = "iom-srv-account"
-}
-
-variable "service_account_display_name" {
-  type        = string
-  description = "Display name of the service account to create"
-  default     = "iom-service-account"
 }
 
 
@@ -80,7 +67,7 @@ variable "driver_min_node_count" {
 variable "driver_max_node_count" {
   type        = number
   description = "Maximum number of nodes in the driver node pool"
-  default = "100"
+  default     = "100"
 }
 
 
@@ -93,7 +80,7 @@ variable "exec_min_node_count" {
 variable "exec_max_node_count" {
   type        = number
   description = "Maximum number of nodes in the exec node pool"
-  default = "1000"
+  default     = "1000"
 }
 
 variable "exec_disk_size_gb" {

@@ -32,19 +32,19 @@ output "gke_name" {
 } 
  
 output "cluster_endpoint" {
-  value       = module.data-plane.cluster_endpoint
   description = "The IP address of this cluster's Kubernetes master."
+  value       = module.data-plane.cluster_endpoint
 }
 
 output "cluster_service_account_key" {
   description = "The private key of the cluster service account."
-  value = (module.data-plane.google_service_account_key)
+  value = (module.data-plane.cluster_service_account_key)
   sensitive = true
 }
 
 output "cluster_ca_certificate" {
-  value       = module.data-plane.cluster_ca_certificate
   description = "The cluster CA certificate for the AKS cluster."
+  value       = module.data-plane.cluster_ca_certificate
   sensitive   = true
 }
 

@@ -25,45 +25,11 @@ resource "google_storage_bucket" "assets" {
 }
 
 
-resource "google_storage_bucket_iam_member" "this" {
+resource "google_storage_bucket_iam_member" "assets_member_add" {
   depends_on = [google_project_service.enabled_apis]
 
   bucket = google_storage_bucket.assets.name
   role   = "roles/storage.objectAdmin"
 
-  member = "serviceAccount:${google_service_account.default.email}"
+  member = "serviceAccount:${google_service_account.cluster_service_account.email}"
 }
-
-############################################
-
-# resource "google_storage_bucket_iam_binding" "lakehouse" {
-#   depends_on = [google_project_service.enabled_apis]
-
-#   bucket = google_storage_bucket.lakehouse.name
-#   role   = "roles/storage.objectAdmin"
-
-#   members = [
-#     "serviceAccount:${google_service_account.default.email}"
-#   ]
-# }
-
-
-
-
-# resource "google_storage_bucket" "lakehouse" {
-#   depends_on = [google_project_service.enabled_apis]
-
-#   name          = "lakehose-bucket-test"
-#   location      = "US"
-#   force_destroy = true
-
-#   lifecycle_rule {
-#     condition {
-#       age = 180
-#     }
-#     action {
-#       type = "Delete"
-#     }
-#   }
-
-# }
