@@ -7,7 +7,7 @@ provider "google" {
 
 locals {
   cluster_name     = "iomete-${var.cluster_id}"
-  module_version   = "1.0.0"
+  module_version   = "1.0.1"
   api_services_map = { for service in var.api_services : service => true }
 
 
@@ -58,9 +58,9 @@ resource "random_id" "random" {
 }
 
 module "storage-configuration" {
-  source             = "./modules/storage-configuration"
-  project_id         = var.project_id
-  location           = var.location
+  source                     = "./modules/storage-configuration"
+  project_id                 = var.project_id
+  location                   = var.location
   cluster_assets_bucket_name = google_storage_bucket.assets.name
 
 }
@@ -79,9 +79,8 @@ resource "null_resource" "save_outputs" {
     echo "gkeName: $(terraform output gke_name)" >> IOMETE_DATA &&
     echo "Endpoint: $(terraform output cluster_endpoint)" >> IOMETE_DATA &&
     echo "Cluster CA Certificate: $(terraform output cluster_ca_certificate)" >> IOMETE_DATA &&
-    echo "Google Service Account Key: $(terraform output google_service_account_key)" >> IOMETE_DATA
+    echo "Cluster Service Account Key: $(terraform output cluster_service_account_key)" >> IOMETE_DATA
     fi
-
 
     EOT
   }

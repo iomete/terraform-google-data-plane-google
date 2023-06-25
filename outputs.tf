@@ -4,8 +4,6 @@ output "cluster_id" {
 }
 
 output "gke_name" {
-  # This may seem redundant with the `name` input, but it serves an important
-  # purpose. Terraform won't establish a dependency graph without this to interpolate on.
   description = "The name of the cluster master. This output is used for interpolation with node pools, other modules."
   value       = google_container_cluster.primary.name
 }
@@ -38,24 +36,16 @@ output "token" {
 }
 
 
-output "google_service_account_key" {
+output "cluster_service_account_key" {
   description = "The private key of the service account."
-  value       = base64decode(google_service_account_key.default.private_key)
+  value       = base64decode(google_service_account_key.cluster_service_account_key.private_key)
   sensitive   = true
 }
 
- 
+
 output "lakehouse_bucket_name" {
   description = "The name of the cluster master. This output is used for interpolation with node pools, other modules."
   value       = module.storage-configuration.lakehouse_bucket_name
 }
 
-output "lakehouse_service_account_key" {
-  description = "The private key of the service account."
-  value       = module.storage-configuration.lakehouse_service_account_key
-  sensitive   = true
-}
-
- output "lakehouse_service_account_email" {
-   value = module.storage-configuration.lakehouse_service_account_email
- }
+ 

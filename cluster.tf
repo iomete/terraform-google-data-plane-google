@@ -133,7 +133,7 @@ resource "google_container_node_pool" "driver_node_1" {
 
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
+    service_account = google_service_account.cluster_service_account.email
     oauth_scopes    = local.node_pool_oauth_scopes
   }
 
@@ -187,7 +187,7 @@ resource "google_container_node_pool" "driver_node_2" {
     tags = local.tags
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
+    service_account = google_service_account.cluster_service_account.email
     oauth_scopes    = local.node_pool_oauth_scopes
   }
   timeouts {
@@ -239,7 +239,7 @@ resource "google_container_node_pool" "driver_node_3" {
     tags = local.tags
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
+    service_account = google_service_account.cluster_service_account.email
     oauth_scopes    = local.node_pool_oauth_scopes
   }
   timeouts {
@@ -292,7 +292,7 @@ resource "google_container_node_pool" "exec_node_1" {
     tags = local.tags
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
+    service_account = google_service_account.cluster_service_account.email
     oauth_scopes    = local.node_pool_oauth_scopes
   }
 
@@ -340,7 +340,7 @@ resource "google_container_node_pool" "exec_node_2" {
 
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
+    service_account = google_service_account.cluster_service_account.email
     oauth_scopes    = local.node_pool_oauth_scopes
   }
 
@@ -387,7 +387,7 @@ resource "google_container_node_pool" "exec_node_3" {
     tags = local.tags
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
+    service_account = google_service_account.cluster_service_account.email
     oauth_scopes    = local.node_pool_oauth_scopes
   }
 
@@ -434,7 +434,7 @@ resource "google_container_node_pool" "exec_node_4" {
     tags = local.tags
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.default.email
+    service_account = google_service_account.cluster_service_account.email
     oauth_scopes    = local.node_pool_oauth_scopes
   }
 
@@ -468,25 +468,6 @@ resource "google_compute_router" "router" {
   network = google_compute_network.vpc_network.id
 }
 
-# resource "google_compute_address" "address" {
-#   count  = 2
-#   name   = "nat-ip-${count.index}"
-#   region = google_compute_subnetwork.subnet.region
-# }
-
-# resource "google_compute_router_nat" "nat_manual" {
-#   name   = "${local.cluster_name}-router-nat"
-#   router = google_compute_router.router.name
-#   region = google_compute_router.router.region
-#   nat_ip_allocate_option = "MANUAL_ONLY"
-#   nat_ips                = google_compute_address.address.*.self_link
-
-#   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
-#   subnetwork {
-#     name                    = google_compute_subnetwork.subnet.id
-#     source_ip_ranges_to_nat = ["LIST_OF_SECONDARY_IP_RANGES"]
-#   }
-# }
 
 resource "google_compute_router_nat" "advanced-nat" {
   name                               = "${local.cluster_name}-router-nat"
@@ -494,38 +475,10 @@ resource "google_compute_router_nat" "advanced-nat" {
   region                             = google_compute_router.router.region
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
-  # subnetwork {
-  #   name = "${google_compute_subnetwork.subnet.self_link}"
-  #   source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
-  # }
 }
-# resource "google_compute_firewall" "allow-egress" {
-#   name        = "${local.cluster_name}-allow-egress"
-#   network     = google_compute_network.vpc_network.id
-#   priority    = 1000
-#   direction   = "EGRESS"
-#   allow      {
-#     protocol = "all"
-#   }
-
-# }
-# resource "google_compute_firewall" "allow-ingress" {
-#   name        = "${local.cluster_name}-allow-ingress"
-#   network     = google_compute_network.vpc_network.id
-#   priority    = 1000
-#   direction   = "INGRESS"
-#   allow      {
-#     protocol = "all"
-#   }
-
-#   source_ranges = [ "10.0.0.0/16" ]
-
-
-# }
-
 
 resource "google_compute_firewall" "ingress_self_all" {
-  name      = "ingress-self-all"
+  name      = "ingress-self-all-${local.cluster_name}"
   network   = google_compute_network.vpc_network.id
   priority  = 1000
   direction = "INGRESS"
@@ -540,7 +493,7 @@ resource "google_compute_firewall" "ingress_self_all" {
 }
 
 resource "google_compute_firewall" "ingress_cluster_all" {
-  name      = "ingress-cluster-all"
+  name      = "ingress-cluster-all-${local.cluster_name}"
   network   = google_compute_network.vpc_network.id
   priority  = 1001
   direction = "INGRESS"
@@ -554,7 +507,7 @@ resource "google_compute_firewall" "ingress_cluster_all" {
 }
 
 resource "google_compute_firewall" "egress_all" {
-  name      = "egress-all"
+  name      = "egress-all-${local.cluster_name}"
   network   = google_compute_network.vpc_network.id
   priority  = 1000
   direction = "EGRESS"

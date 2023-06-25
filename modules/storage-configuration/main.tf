@@ -51,21 +51,3 @@ resource "google_storage_bucket_iam_member" "assets" {
 
   member = "serviceAccount:${google_service_account.lakehouse.email}"
 }
-############################################
-
-resource "null_resource" "save_outputs" {
-  depends_on = [
-    google_storage_bucket_iam_member.assets
-  ]
-  triggers = {
-    run_every_time = uuid()
-  }
-  provisioner "local-exec" {
-    command = <<-EOT
-    
-    echo "Lakehouse Bucket Name: $( terraform output lakehouse_bucket_name )" >> Lakehouse_data &&
-    echo "Lakehouse Service Account Key: $( terraform output  lakehouse_service_account_key )" >> Lakehouse_data
-    
-    EOT
-  }
-}
