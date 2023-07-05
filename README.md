@@ -19,7 +19,7 @@ Open this file ordinary text editor and copy the content of the file to the IOME
  
 module "data-plane" {
   source                       = "iomete/data-plane-google/google"
-  version                      = "1.0.0"
+  version                      = "1.0.1"
   project_id                   = "project_id"
   cluster_id                   = "goog_cust"
   location                     = "us-central1"    # Cluster installed region

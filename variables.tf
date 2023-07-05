@@ -86,7 +86,7 @@ variable "exec_max_node_count" {
 variable "exec_disk_size_gb" {
   type        = number
   description = "Disk size in GB for the executer nodes"
-  default     = 30
+  default     = "400"
 }
 
 variable "exec_disk_type" {
