@@ -14,6 +14,11 @@ variable "api_services" {
   ]
 }
 
+variable "account_id" {
+  description = "The ID of the account that will be created for IOMETE. This account will be used to create and manage your infrastructure. Please make sure you have valid account ID, otherwise the resource creation will fail."
+  type        = string
+}
+
 variable "location" {
   type        = string
   description = "The region where the cluster and Cloud storage will be hosted"
@@ -23,12 +28,6 @@ variable "zone" {
   type        = string
   description = "The zone where the cluster will be hosted"
 }
-
-variable "cluster_id" {
-  type        = string
-  description = "Cluster id from IOMETE. This should match the cluster id in IOMETE"
-}
-
 
 variable "cluster_min_cpu" {
   type        = number

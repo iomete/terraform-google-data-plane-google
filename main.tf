@@ -5,16 +5,20 @@ provider "google" {
   region  = var.location
 }
 
+resource "random_id" "random" {
+  byte_length = 5
+}
+
 locals {
-  cluster_name     = "iomete-${var.cluster_id}"
+  cluster_name     = "iomete-${random_id.random.hex}"
   module_version   = "1.0.1"
   api_services_map = { for service in var.api_services : service => true }
 
 
 
   tags = [
-    "iomete-clusterid-${var.cluster_id}",
-    "iomete-clustername-${local.cluster_name}",
+    "iomete-clusterid-${random_id.random.hex}",
+    "iomete-clustername-${random_id.random.hex}",
     "iomete-terraform",
     "iomete-managed",
     "iomete-google",
@@ -51,11 +55,6 @@ provider "helm" {
   }
 }
 
-
-resource "random_id" "random" {
-  byte_length = 5
-
-}
 
 module "storage-configuration" {
   source                     = "./modules/storage-configuration"

@@ -5,12 +5,12 @@ resource "kubernetes_secret" "iom-manage-secrets" {
   }
 
   data = {
-    "gcloud.settings" = jsonencode({
+    "settings" = jsonencode({
       region  = var.location,
+      cloud   = "gcp",
       zone    = var.zone,
       project = var.project_id,
       cluster = {
-        id   = var.cluster_id,
         name = local.cluster_name,
       },
 
@@ -37,11 +37,14 @@ resource "kubernetes_secret" "iom-manage-secrets" {
       service_key = {
         "credentials.json" = base64decode(google_service_account_key.cluster_service_account_key.private_key),
         caCert             = base64decode(google_container_cluster.primary.master_auth.0.cluster_ca_certificate),
+        clusterCa          = base64decode(google_container_cluster.primary.master_auth[0].cluster_ca_certificate),
       }
 
       terraform = {
         module_version = local.module_version
       },
+
+
 
     })
   }
@@ -62,16 +65,15 @@ resource "kubernetes_namespace" "fluxcd" {
 }
 
 
-resource "helm_release" "fluxcd" {
 
+resource "helm_release" "fluxcd" {
   name       = "helm-operator"
   namespace  = "fluxcd"
   repository = "https://fluxcd-community.github.io/helm-charts"
-  version    = "2.7.0"
+  version    = "2.9.2"
   chart      = "flux2"
   depends_on = [
-    kubernetes_namespace.fluxcd,
-    google_container_cluster.primary
+    kubernetes_namespace.fluxcd
   ]
   set {
     name  = "imageReflectionController.create"
@@ -93,5 +95,34 @@ resource "helm_release" "fluxcd" {
     value = "false"
   }
 
+
+}
+
+
+resource "helm_release" "iomete-agent" {
+  name       = "iomete-agent"
+  namespace  = "default"
+  repository = "https://chartmuseum.iomete.com"
+  chart      = "iom-agent"
+  version    = "0.2.0"
+  depends_on = [
+    helm_release.fluxcd,
+    kubernetes_secret.iom-manage-secrets,
+  ]
+
+  set {
+    name  = "iometeAccountId"
+    value = var.account_id
+  }
+
+  set {
+    name  = "cloud"
+    value = "gcp"
+  }
+
+  set {
+    name  = "region"
+    value = var.location
+  }
 
 }

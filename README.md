@@ -20,8 +20,8 @@ Open this file ordinary text editor and copy the content of the file to the IOME
 module "data-plane" {
   source                       = "iomete/data-plane-google/google"
   version                      = "1.0.1"
+  account_id                   = "account_id"
   project_id                   = "project_id"
-  cluster_id                   = "goog_cust"
   location                     = "us-central1"    # Cluster installed region
   zone                         = "us-central1-c" # Cluster installed exact zone
 }
@@ -64,7 +64,6 @@ terraform apply
 
 | Name | Description | Required |
 | --- | --- | --- |
-| cluster_id | The name of the AKS cluster | yes |
 | project_id | Googl cloud project name to install resources | yes |
 | location | Where all resources will create | yes |
 | zone | Exact zone to install google storage bucket | yes |

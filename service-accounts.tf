@@ -4,7 +4,7 @@
 #########################################
 resource "google_service_account" "cluster_service_account" {
   depends_on   = [google_project_service.enabled_apis]
-  account_id   = var.cluster_id
+  account_id   = local.cluster_name
   display_name = "Cluster Service Account for ${local.cluster_name}"
 }
 
