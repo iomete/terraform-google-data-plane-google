@@ -1,13 +1,17 @@
+variable "cluster_name" {
+  type        = string
+  description = "A unique cluster name for IOMETE. It should be unique withing GCP project and compatible with GCP naming conventions (See: https://cloud.google.com/compute/docs/naming-resources)."
+}
 
 variable "project_id" {
   type        = string
-  description = "The ID of your Google Cloud project. This is a unique identifier for your project and can be found in the Google Cloud Console."
+  description = "Your Google Cloud project ID. This is a unique identifier for your project and can be found in the Google Cloud Console."
 }
 
 variable "api_services" {
   description = "A list of API services to enable for your Google Cloud project. These services are required for the proper functioning of your infrastructure. Please make sure you have enabled billing account, otherwise the resource creation will fail."
   type        = list(string)
-  default = [
+  default     = [
     "compute.googleapis.com",
     "iam.googleapis.com",
     "container.googleapis.com"
@@ -23,12 +27,6 @@ variable "zone" {
   type        = string
   description = "The zone where the cluster will be hosted"
 }
-
-variable "cluster_id" {
-  type        = string
-  description = "Cluster id from IOMETE. This should match the cluster id in IOMETE"
-}
-
 
 variable "cluster_min_cpu" {
   type        = number
@@ -54,10 +52,10 @@ variable "cluster_max_memory" {
   description = "Maximum amount of memory in the cluster node. This is the maximum amount of memory that will be available in the cluster and node pools."
   default     = 5000
 }
-########################
-# nodepools variables #
-########################
 
+########################
+# node pools variables #
+########################
 variable "driver_min_node_count" {
   type        = number
   description = "Minimum number of nodes in the driver node pool"
@@ -69,7 +67,6 @@ variable "driver_max_node_count" {
   description = "Maximum number of nodes in the driver node pool"
   default     = "100"
 }
-
 
 variable "exec_min_node_count" {
   type        = number
