@@ -1,6 +1,28 @@
+
+provider "kubernetes" {
+  host                   = "https://${google_container_cluster.primary.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth[0].cluster_ca_certificate)
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = "https://${google_container_cluster.primary.endpoint}"
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(google_container_cluster.primary.master_auth[0].cluster_ca_certificate)
+  }
+}
+
+resource "kubernetes_namespace" "iomete-system" {
+  metadata {
+    name = "iomete-system"
+  }
+}
+
 resource "kubernetes_secret" "data-plane-secret" {
   metadata {
     name = "iomete-data-plane-secret"
+    namespace = "iomete-system"
   }
 
   data = {
@@ -37,7 +59,6 @@ resource "kubernetes_secret" "data-plane-secret" {
     google_container_cluster.primary
   ]
 }
-
 
 resource "kubernetes_namespace" "fluxcd" {
   metadata {
